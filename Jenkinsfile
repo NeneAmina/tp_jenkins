@@ -8,18 +8,21 @@ pipeline {
                 sh 'docker build -t nenejalloh/flask:$BUILD_NUMBER .'
             }
         }
-        stage('login to dockerhub') {
-            steps{
+
+        stage('Login to DockerHub') {
+            steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('push image') {
-            steps{
+
+        stage('Push image') {
+            steps {
                 sh 'docker push nenejalloh/flask:$BUILD_NUMBER'
             }
         }
-}
-post {
+    }
+
+    post {
         always {
             sh 'docker logout'
         }
