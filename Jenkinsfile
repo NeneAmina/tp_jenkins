@@ -1,8 +1,6 @@
 pipeline {
     agent any 
-    environment {
-    DOCKERHUB_CREDENTIALS = credentials('karim-dockerhub')
-    }
+   
     stages { 
 
         stage('Build docker image') {
