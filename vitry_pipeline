@@ -1,24 +1,25 @@
 pipeline {
-    agent any 
-   
-    stages { 
-
-        stage('Build docker image') {
-            steps {  
-                sh 'docker build -t nenejalloh/flask:$BUILD_NUMBER .'
-            }
-        }
-
-        stage('Login to DockerHub') {
+    agent any
+    environment {
+      
+        APP_NAME = "laly9999/lil-node-app"
+    }
+    stages {
+        stage('SCM Checkout') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                git branch: 'main', url: 'https://github.com/lily4499/lil-node-app.git'
             }
         }
-         stage('Scan Docker Image') {
+        stage('Build docker image') {
+            steps {
+                sh 'docker build -t $APP_NAME:latest .'
+            }
+        }
+        stage('Scan Docker Image') {
             steps {
                 script {
                     try {
-                        def trivyOutput = sh(script: "trivy image --severity HIGH,CRITICAL nenejalloh/flask:$BUILD_NUMBER", returnStdout: true).trim()
+                        def trivyOutput = sh(script: "trivy image --severity HIGH,CRITICAL $APP_NAME:latest", returnStdout: true).trim()
                         println trivyOutput
                         if (trivyOutput.contains("Total: 0")) {
                             echo "No high or critical vulnerabilities found in the Docker image."
@@ -33,18 +34,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Push image') {
-            steps {
-                sh 'docker push nenejalloh/flask:$BUILD_NUMBER'
-            }
-        }
     }
-
     post {
         always {
-            sh 'docker rmi nenejalloh/flask:$BUILD_NUMBER || true'
-            sh 'docker logout'
+            sh 'docker rmi $APP_NAME:latest || true'
         }
     }
 }
