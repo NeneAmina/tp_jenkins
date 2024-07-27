@@ -3,7 +3,7 @@
 
 # Docker jenkins
 ## 1. Architecture mise en place repertoire github
-![Architecture setup git](github_setup.png)
+![alt text](jenkins_schema-Page-1.drawio-1.png)
 ## 1.1 Mise en place du repertoire de travail
 Nous allons migrer le repertoire de test vers un repertoire dont nous avons le contraire.
 nous clone le repertoire de test
@@ -27,12 +27,13 @@ Ensuite nous demarrons le conteneur
 ```bash
 docker run -d -p 80:8081 myapp/flask
 ```
-l'application tourne sur le port 80 accessible sur http://ec2-63-32-89-123.eu-west-1.compute.amazonaws.com/
+l'application tourne sur le port 80 accessible sur http://ec2-63-32-89-123.eu-west-1.compute.amazonaws.com/ disponible sur aws
+
 
 maintenant que l'application tourne sur un conteneur, nous allons créér un registre de gestion d'image sur docker hub en suivant la documentaition officiel https://hub.docker.com/ 
 
 ## 2 Architecture du setup avec docker hub
-![alt text](setup_docker_hub.png)
+![alt text](jenkins_schema-Page-1.drawio.png)
 
 Maintenant que nous avons notre repertoire github en place et notre registre d'image sur docker hub nous allons mettre à jour notre fichier de build [jenkinsfile](Jenkinsfile).
 Nous remplaçons dans le fichier la variable  {REGISTER_DOCKER_HUB} par le nom de registre docker hub.
@@ -92,6 +93,13 @@ Ensuite nous l'execution du pipeline après avoir configuré les variables d'env
 ```bash
  docker run --name flaskapp -d -p 80:8081 nenejalloh/flask:7
  ```
+### 4 Security
+
+#### 4.1 Trivy integration 
+A propos de Trivy https://aquasecurity.github.io/trivy/v0.18.3/
+
+<img src="image-5.png" alt="drawing" width="2000" height="200"/>
+
 
 
 ### 4 Amelioration
