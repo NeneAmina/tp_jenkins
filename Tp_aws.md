@@ -1,2 +1,1 @@
 # Terraform
-cd a
